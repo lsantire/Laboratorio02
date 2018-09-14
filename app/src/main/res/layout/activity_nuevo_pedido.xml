@@ -7,4 +7,129 @@
     android:layout_height="match_parent">
 
 
+    <TextView
+        android:id="@+id/tvTituloPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvCorreoElectronico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/correoElectronico" />
+
+    <EditText
+        android:id="@+id/editPedidoCorreo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/tvModoEntrega"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/modoEntregaPedido" />
+
+    <RadioGroup
+        android:id="@+id/optPedidoModoEntrega"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/optPedidoRetira"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/retiraPedido" />
+
+        <RadioButton
+            android:id="@+id/optPedidoEnviar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/enviarPedido" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/direccion" />
+
+    <EditText
+        android:id="@+id/editDireccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/tvHoraEntrega"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/horaEntrega" />
+
+    <EditText
+        android:id="@+id/editHoraEntrega"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="time" />
+
+    <ListView
+        android:id="@+id/listProductosPedido"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAgregarProductoPedido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/agregarProducto" />
+
+        <Button
+            android:id="@+id/btnQuitarProductoPedido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/quitarProducto" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCostoTotalPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnFinalizarPedido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/finalizarPedido" />
+
+        <Button
+            android:id="@+id/btnVolverPedido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/volver" />
+    </LinearLayout>
+
 </LinearLayout>

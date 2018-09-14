@@ -5,4 +5,14 @@
     <string name="listaProductos">Lista de productos</string>
     <string name="cantidadPedir">Cantidad a pedir</string>
     <string name="btnAgregar">Agregar</string>
+    <string name="correoElectronico">Correo electronico</string>
+    <string name="modoEntregaPedido">Modo de entrega</string>
+    <string name="retiraPedido">Retirar en local</string>
+    <string name="enviarPedido">Enviar a domicilio</string>
+    <string name="direccion">Direccion</string>
+    <string name="horaEntrega">Hora de entrega</string>
+    <string name="agregarProducto">Agregar producto</string>
+    <string name="quitarProducto">Quitar producto</string>
+    <string name="finalizarPedido">Finalizar pedido</string>
+    <string name="volver">Volver</string>
 </resources>
