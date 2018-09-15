@@ -15,4 +15,7 @@
     <string name="quitarProducto">Quitar producto</string>
     <string name="finalizarPedido">Finalizar pedido</string>
     <string name="volver">Volver</string>
+    <string name="pedidosRealziados"> Pedidos Realizados</string>
+    <string name="btnNuevo"> Nuevo </string>
+    <string name="btnMenu"> Menu </string>
 </resources>
