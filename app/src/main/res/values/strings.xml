@@ -5,6 +5,8 @@
     <string name="listaProductos">Lista de productos</string>
     <string name="cantidadPedir">Cantidad a pedir</string>
     <string name="btnAgregar">Agregar</string>
+
+    <string name="tituloPedido">NUEVO PEDIDO</string>
     <string name="correoElectronico">Correo electronico</string>
     <string name="modoEntregaPedido">Modo de entrega</string>
     <string name="retiraPedido">Retirar en local</string>
@@ -24,4 +26,5 @@
     <string name="fechaDeEntrega"> Fecha de Entrega: </string>
     <string name="itemsPagar"> items: Pagar:</string>
     <string name="estado">Estado: </string>
+    <string name="costoTotal">"Costo total: "</string>
 </resources>
