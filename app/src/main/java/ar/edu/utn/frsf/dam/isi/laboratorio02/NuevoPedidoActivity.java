@@ -129,7 +129,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setEstado(Pedido.Estado.REALIZADO);
                     pedido.setMailContacto(editPedidoCorreo.getText().toString());
                     pedido.setRetirar(optPedidoRetira.isChecked());
-                    pedido.setFecha();//HACER DESPUES
+                    //pedido.setFecha();//HACER DESPUES
                     repositorioPedidos.guardarPedido(pedido);
                 }
             }
