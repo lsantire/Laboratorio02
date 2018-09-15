@@ -91,6 +91,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                 editHoraEntrega.setText(sdf.format(pedido.getFecha()));
                 optPedidoEnviar.setChecked(!pedido.getRetirar());
                 optPedidoRetira.setChecked(pedido.getRetirar());
+                tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
 
                 adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_1, pedido.getDetalle());
                 listaProductosPedido.setAdapter(adaptadorDetallePedido);
@@ -140,8 +141,10 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         listaProductosPedido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                btnQuitarProductoPedido.setEnabled(true);
-                detallePedidoSeleccionado = (PedidoDetalle) parent.getItemAtPosition(position);
+                if(!getIntent().hasExtra("idPedidoSeleccionado")){
+                    btnQuitarProductoPedido.setEnabled(true);
+                        detallePedidoSeleccionado = (PedidoDetalle) parent.getItemAtPosition(position);
+                }
             }
         });
 
@@ -151,8 +154,8 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                 pedido.quitarDetalle(detallePedidoSeleccionado);
                 adaptadorDetallePedido.notifyDataSetChanged();
                 tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
-                listaProductosPedido.setSelected(false);
                 btnQuitarProductoPedido.setEnabled(false);
+
             }
         });
 

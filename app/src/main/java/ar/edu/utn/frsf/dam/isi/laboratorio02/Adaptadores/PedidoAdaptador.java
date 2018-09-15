@@ -78,7 +78,7 @@ public class PedidoAdaptador extends ArrayAdapter<Pedido> {
         holder.button2.setTag(position);
         holder.contacto.setText("Contacto: " + pedido.getMailContacto());
         holder.fechaDeEntrega.setText("Fecha de Entrega: " + pedido.getFecha());
-        holder.itemsPagar.setText("Item: "+pedido.getDetalle());
+        holder.itemsPagar.setText("Items: "+pedido.getDetalle().size()+ String.format("\nTotal a pagar: $%.2f", pedido.total()));
         switch (pedido.getEstado()){
             case LISTO:
                 holder.estado.setTextColor(Color.DKGRAY);

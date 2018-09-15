@@ -38,8 +38,6 @@ public class VerHistorialActivity extends AppCompatActivity {
         btnHistorialMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(VerHistorialActivity.this, MainActivity.class);
-                startActivity(i);
                 finish();
             }
         });
@@ -52,20 +50,6 @@ public class VerHistorialActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-        lstHistorialPedidos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent i = new Intent(VerHistorialActivity.this, NuevoPedidoActivity.class);
-                i.putExtra("ID_PEDIDO",((Pedido)parent.getItemAtPosition(position)).getId());
-                startActivity(i);
-                return false;
-            }
-        });
-
-
 
 
     }

@@ -16,7 +16,7 @@
     <ListView
         android:id="@+id/lstHistorialPedidos"
         android:layout_width="match_parent"
-        android:layout_height="397dp">
+        android:layout_height="500dp" >
 
     </ListView>
 
@@ -42,5 +42,4 @@
             android:layout_weight="1"
             android:text="@string/btnMenu" />
     </LinearLayout>
-
 </LinearLayout>
