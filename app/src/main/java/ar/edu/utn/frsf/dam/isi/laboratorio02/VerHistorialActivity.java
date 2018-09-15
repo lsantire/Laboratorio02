@@ -40,6 +40,7 @@ public class VerHistorialActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(VerHistorialActivity.this, MainActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -48,6 +49,7 @@ public class VerHistorialActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(VerHistorialActivity.this, NuevoPedidoActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 

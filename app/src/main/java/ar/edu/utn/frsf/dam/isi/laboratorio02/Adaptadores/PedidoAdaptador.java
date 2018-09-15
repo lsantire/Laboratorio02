@@ -71,7 +71,7 @@ public class PedidoAdaptador extends ArrayAdapter<Pedido> {
                         ctx.startActivity(i);
                     }
                 });
-
+        holder.button.setTag(position);
         holder.contacto.setText("Contacto: " + pedido.getMailContacto());
         holder.fechaDeEntrega.setText("Fecha de Entrega: " + pedido.getFecha());
         holder.itemsPagar.setText("Item: ");
