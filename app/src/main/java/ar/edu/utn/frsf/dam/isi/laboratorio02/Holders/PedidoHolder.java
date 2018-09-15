@@ -31,5 +31,4 @@ public class PedidoHolder {
         this.button2 = (Button) base.findViewById(R.id.button2);
     }
 
-
 }
