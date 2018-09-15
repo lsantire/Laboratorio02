@@ -99,8 +99,6 @@ public class Pedido {
 
     public void quitarDetalle(PedidoDetalle det){
         if(this.detalle != null) this.detalle.remove(det);
-        System.out.println(detalle.size());
-        if(det==null) System.out.println("pajero\n");
     }
 
     @Override

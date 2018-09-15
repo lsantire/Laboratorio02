@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -17,7 +16,7 @@ public class VerHistorialActivity extends AppCompatActivity {
 
     private ListView lstHistorialPedidos;
     private PedidoAdaptador adaptadorPedidos;
-    private PedidoRepository pedidos;
+    private PedidoRepository pedidosRepository;
     private Button btnHistorialNuevo;
     private Button btnHistorialMenu;
 
@@ -30,9 +29,10 @@ public class VerHistorialActivity extends AppCompatActivity {
         lstHistorialPedidos = (ListView) findViewById(R.id.lstHistorialPedidos);
         btnHistorialNuevo = (Button) findViewById(R.id.btnHistorialNuevo);
         btnHistorialMenu = (Button) findViewById(R.id.btnHistorialMenu);
-        pedidos = new PedidoRepository();
 
-        adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this,pedidos.getLista());
+        pedidosRepository = new PedidoRepository();
+
+        adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this, pedidosRepository.getLista());
         lstHistorialPedidos.setAdapter(adaptadorPedidos);
 
         btnHistorialMenu.setOnClickListener(new View.OnClickListener() {

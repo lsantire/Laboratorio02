@@ -11,7 +11,7 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.R;
 
 public class PedidoHolder {
 
-    public TextView textView3;
+
     public TextView contacto;
     public ImageView imageView;
     public TextView fechaDeEntrega;
@@ -21,7 +21,6 @@ public class PedidoHolder {
     public Button button2;
 
     public PedidoHolder(View base) {
-        this.textView3 = (TextView) base.findViewById(R.id.textView3);
         this.contacto = (TextView) base.findViewById(R.id.contacto);
         this.imageView = (ImageView) base.findViewById(R.id.imageView);
         this.fechaDeEntrega = (TextView) base.findViewById(R.id.fechaDeEntrega);

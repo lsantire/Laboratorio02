@@ -66,15 +66,19 @@ public class PedidoAdaptador extends ArrayAdapter<Pedido> {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        int indice = (int) view.getTag();
+                        Pedido pedidoSeleccionado = datos.get(indice);
                         Intent i = new Intent(ctx, NuevoPedidoActivity.class);
-                        i.putExtra("idPedidoSeleccionado",pedido.getId());
+                        i.putExtra("idPedidoSeleccionado",pedidoSeleccionado.getId());
                         ctx.startActivity(i);
                     }
                 });
+
         holder.button.setTag(position);
+        holder.button2.setTag(position);
         holder.contacto.setText("Contacto: " + pedido.getMailContacto());
         holder.fechaDeEntrega.setText("Fecha de Entrega: " + pedido.getFecha());
-        holder.itemsPagar.setText("Item: ");
+        holder.itemsPagar.setText("Item: "+pedido.getDetalle());
         switch (pedido.getEstado()){
             case LISTO:
                 holder.estado.setTextColor(Color.DKGRAY);
