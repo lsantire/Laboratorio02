@@ -59,7 +59,8 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_single_choice, pedido.getDetalle());
         extras = getIntent().getExtras();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("HH:mm");
 
         btnVolverPedido = (Button) findViewById(R.id.btnVolverPedido);
         editHoraEntrega = (EditText) findViewById(R.id.editHoraEntrega);
