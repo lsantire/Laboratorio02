@@ -27,7 +27,8 @@
     <ListView
         android:id="@+id/listProductos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="329dp"
+        android:choiceMode="singleChoice">
 
     </ListView>
 
@@ -38,16 +39,18 @@
         android:text="@string/cantidadPedir" />
 
     <EditText
-        android:id="@+id/edtCantidadProducto"
+        android:id="@+id/editCantidadProducto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:enabled="false"
         android:inputType="number" />
 
     <Button
         android:id="@+id/btnAgregarProducto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/btnAgregar" />
 
 </LinearLayout>
