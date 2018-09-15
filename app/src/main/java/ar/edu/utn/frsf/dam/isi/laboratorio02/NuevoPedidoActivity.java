@@ -131,6 +131,9 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setRetirar(optPedidoRetira.isChecked());
                     //pedido.setFecha();//HACER DESPUES
                     repositorioPedidos.guardarPedido(pedido);
+                    Intent i = new Intent(NuevoPedidoActivity.this,VerHistorialActivity.class);
+                    startActivity(i);
+                    finish();
                 }
             }
         });
@@ -139,7 +142,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
 
     private boolean readyToFinish()
     {
-        return false;
+        return true;
     }
 
     @Override
