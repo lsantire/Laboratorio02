@@ -9,13 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.Adaptadores.PedidoAdaptador;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class VerHistorialActivity extends AppCompatActivity {
 
     private ListView lstHistorialPedidos;
-    private ArrayAdapter<Pedido> adaptadorPedidos;
+    private PedidoAdaptador adaptadorPedidos;
     private PedidoRepository pedidos;
     private Button btnHistorialNuevo;
     private Button btnHistorialMenu;
@@ -31,7 +32,7 @@ public class VerHistorialActivity extends AppCompatActivity {
         btnHistorialMenu = (Button) findViewById(R.id.btnHistorialMenu);
         pedidos = new PedidoRepository();
 
-        adaptadorPedidos = new ArrayAdapter<Pedido>(VerHistorialActivity.this,android.R.layout.simple_list_item_1,pedidos.getLista());
+        adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this,pedidos.getLista());
         lstHistorialPedidos.setAdapter(adaptadorPedidos);
 
         btnHistorialMenu.setOnClickListener(new View.OnClickListener() {

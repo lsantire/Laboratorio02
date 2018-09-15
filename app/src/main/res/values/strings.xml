@@ -18,4 +18,10 @@
     <string name="pedidosRealziados"> Pedidos Realizados</string>
     <string name="btnNuevo"> Nuevo </string>
     <string name="btnMenu"> Menu </string>
+    <string name="btnCancelar"> Cancelar</string>
+    <string name="btnVerDetalle"> Ver Detalle </string>
+    <string name="contacto" > Contacto: </string>
+    <string name="fechaDeEntrega"> Fecha de Entrega: </string>
+    <string name="itemsPagar"> items: Pagar:</string>
+    <string name="estado">Estado: </string>
 </resources>
