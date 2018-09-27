@@ -80,7 +80,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
 
         System.out.println("nuevoPedidoActivity");
 
-        if(getIntent().hasExtra("idPedidoSeleccionado")) {
+        if (getIntent().hasExtra("idPedidoSeleccionado")) {
             int idPedido;
             idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
 
@@ -93,6 +93,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                 optPedidoRetira.setChecked(pedido.getRetirar());
                 tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
 
+
                 adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_1, pedido.getDetalle());
                 listaProductosPedido.setAdapter(adaptadorDetallePedido);
                 editPedidoCorreo.setEnabled(false);
@@ -104,6 +105,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                 btnQuitarProductoPedido.setEnabled(false);
                 btnFinalizarPedido.setEnabled(false);
                 listaProductosPedido.setChoiceMode(ListView.CHOICE_MODE_NONE);
+
             }
 
 
@@ -141,9 +143,9 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         listaProductosPedido.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!getIntent().hasExtra("idPedidoSeleccionado")){
+                if (!getIntent().hasExtra("idPedidoSeleccionado")) {
                     btnQuitarProductoPedido.setEnabled(true);
-                        detallePedidoSeleccionado = (PedidoDetalle) parent.getItemAtPosition(position);
+                    detallePedidoSeleccionado = (PedidoDetalle) parent.getItemAtPosition(position);
                 }
             }
         });
@@ -208,8 +210,8 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     Intent i = new Intent(NuevoPedidoActivity.this, VerHistorialActivity.class);
                     startActivity(i);
                     finish();
-                }else{
-                    Toast.makeText(NuevoPedidoActivity.this,"NO ANDA VIEJO", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(NuevoPedidoActivity.this, "NO ANDA VIEJO", Toast.LENGTH_LONG).show();
                 }
             }
         });
