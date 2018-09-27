@@ -207,6 +207,33 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setMailContacto(editPedidoCorreo.getText().toString());
                     pedido.setRetirar(optPedidoRetira.isChecked());
                     repositorioPedidos.guardarPedido(pedido);
+
+                    Runnable rAceptarPedidos = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Thread.currentThread().sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            //buscar pedidos no aceptados y aceptarlos automaticamente
+                            for(Pedido p:repositorioPedidos.getLista()){
+                                if(p.getEstado().equals(Pedido.Estado.REALIZADO)) p.setEstado(Pedido.Estado.ACEPTADO);
+                            }
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(NuevoPedidoActivity.this,"Informacion de pedidos actualizada!",Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    };
+
+                    Thread hiloActualizacionEstadoPedidos = new Thread(rAceptarPedidos);
+                    hiloActualizacionEstadoPedidos.start();
+
                     Intent i = new Intent(NuevoPedidoActivity.this, VerHistorialActivity.class);
                     startActivity(i);
                     finish();
