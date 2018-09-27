@@ -208,7 +208,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setRetirar(optPedidoRetira.isChecked());
                     repositorioPedidos.guardarPedido(pedido);
 
-                    Runnable r = new Runnable() {
+                    Runnable rAceptarPedidos = new Runnable() {
                         @Override
                         public void run() {
                             try{
@@ -231,7 +231,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                         }
                     };
 
-                    Thread hiloActualizacionEstadoPedidos = new Thread(r);
+                    Thread hiloActualizacionEstadoPedidos = new Thread(rAceptarPedidos);
                     hiloActualizacionEstadoPedidos.start();
 
                     Intent i = new Intent(NuevoPedidoActivity.this, VerHistorialActivity.class);
