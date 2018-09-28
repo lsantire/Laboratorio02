@@ -27,4 +27,7 @@
     <string name="itemsPagar"> items: Pagar:</string>
     <string name="estado">Estado: </string>
     <string name="costoTotal">"Costo total: "</string>
+
+    <string name="channelName">Notificaciones lab3</string>
+    <string name="channelDescription">Este es el canal definido en el lab3</string>
 </resources>

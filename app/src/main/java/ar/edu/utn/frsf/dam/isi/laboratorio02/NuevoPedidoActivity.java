@@ -83,6 +83,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra("idPedidoSeleccionado")) {
             int idPedido;
+            System.out.println("tiene idPedidoSeleccionado");
             idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
 
             if (idPedido >= 0) {
@@ -213,7 +214,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try{
-                                Thread.currentThread().sleep(10000);
+                                Thread.currentThread().sleep(5000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

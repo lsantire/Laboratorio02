@@ -1,8 +1,12 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
@@ -25,7 +29,23 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
             case ESTADO_ACEPTADO:{
                 if(intent.hasExtra("idPedido")){
                     Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
-                    Toast.makeText(context,"Pedido para "+p.getMailContacto()+" ha cambiado de estado a ACEPTADO",Toast.LENGTH_LONG).show();
+
+                    Intent destino = new Intent(context, NuevoPedidoActivity.class);
+                    destino.putExtra("idPedidoSeleccionado",p.getId());
+                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
+                    Notification notifAceptado = new NotificationCompat.Builder(context, "CANAL01")
+                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            .setContentTitle("Tu pedido fue aceptado")
+                            .setContentText("El costo será de "+String.format("$%.2f", p.total())+
+                                    "\nPrevisto el envio para "+p.getFecha())
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .build();
+
+                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                    notifManager.notify(192548,notifAceptado);
                 }
             }
         }
