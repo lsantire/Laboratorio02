@@ -14,11 +14,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_ACEPTADO" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_CANCELADO" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_EN_PREPARACION" />
+                <action android:name="ar.edu.utn.frsf.dam.isi.laboratorio02.ESTADO_LISTO" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".NuevoPedidoActivity" />
-        <activity android:name=".VerHistorialActivity"></activity>
+        <activity android:name=".VerHistorialActivity" />
+
+        <receiver
+            android:name=".EstadoPedidoReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>
