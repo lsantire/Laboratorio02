@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -82,6 +83,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra("idPedidoSeleccionado")) {
             int idPedido;
+            System.out.println("tiene idPedidoSeleccionado");
             idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
 
             if (idPedido >= 0) {
@@ -207,6 +209,40 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setMailContacto(editPedidoCorreo.getText().toString());
                     pedido.setRetirar(optPedidoRetira.isChecked());
                     repositorioPedidos.guardarPedido(pedido);
+
+                    Runnable rAceptarPedidos = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Thread.currentThread().sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            //buscar pedidos no aceptados y aceptarlos automaticamente
+                            for(Pedido p:repositorioPedidos.getLista()){
+                                if(p.getEstado().equals(Pedido.Estado.REALIZADO))
+                                {
+                                    p.setEstado(Pedido.Estado.ACEPTADO);
+                                    Intent intentAceptado = new Intent(NuevoPedidoActivity.this,EstadoPedidoReceiver.class);
+                                    intentAceptado.putExtra("idPedido",p.getId());
+                                    intentAceptado.setAction(EstadoPedidoReceiver.ESTADO_ACEPTADO);
+                                    sendBroadcast(intentAceptado);
+                                }
+                            }
+
+                            /*runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(NuevoPedidoActivity.this,"Informacion de pedidos actualizada!",Toast.LENGTH_LONG).show();
+                                }
+                            });*/
+                        }
+                    };
+
+                    Thread hiloActualizacionEstadoPedidos = new Thread(rAceptarPedidos);
+                    hiloActualizacionEstadoPedidos.start();
+
                     Intent i = new Intent(NuevoPedidoActivity.this, VerHistorialActivity.class);
                     startActivity(i);
                     finish();
