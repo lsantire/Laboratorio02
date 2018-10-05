@@ -214,9 +214,13 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             try{
-                                Thread.currentThread().sleep(5000);
+                                System.out.println("antes del sleep");
+                                Thread.currentThread().sleep(10000);
+                                System.out.println("despues del sleep");
+
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+
                             }
 
                             //buscar pedidos no aceptados y aceptarlos automaticamente
