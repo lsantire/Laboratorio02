@@ -70,6 +70,30 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
                     NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
                     notifManager.notify((int)(Math.random()*10000),notifEnPreparacion);
                 }
+                break;
+
+            }
+            case ESTADO_LISTO: {
+                if (intent.hasExtra("idPedido")) {
+                    Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+
+                    Intent destino = new Intent(context, VerHistorialActivity.class);
+                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, destino, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
+                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            .setContentTitle("Tu pedido esta listo")
+                            .setContentText("El costo será de " + String.format("$%.2f", p.total()) +
+                                    "\nPrevisto el envio para " + p.getFecha())
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .build();
+
+                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                    notifManager.notify((int) (Math.random() * 10000), notifEnPreparacion);
+                }
+                break;
             }
         }
     }
