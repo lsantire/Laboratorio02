@@ -9,17 +9,34 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btnNuevoPedido;
     private Button btnHistorial;
     private Button btnListaProductos;
+    private Button btnPrepararProductos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+        if (getIntent().hasExtra("ID_PEDIDO")) {
+            Integer id = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
+            PedidoRepository pedidoRepository = new PedidoRepository();
+            Pedido pedido = pedidoRepository.buscarPorId(id);
+            if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
+                pedido.setEstado(Pedido.Estado.LISTO);
+                Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
+                intenListo.putExtra("idPedido", pedido.getId());
+                intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
+                sendBroadcast(intenListo);
+            }
+        }
+
         btnNuevoPedido = (Button) findViewById(R.id.btnMainNuevoPedido);
         btnNuevoPedido.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
 
                 startActivity(i);
 
+            }
+        });
+
+        btnPrepararProductos = (Button) findViewById(R.id.btnPrepararPedidos);
+        btnPrepararProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PrepararPedidoService.class);
+                startService(intent);
             }
         });
     }
