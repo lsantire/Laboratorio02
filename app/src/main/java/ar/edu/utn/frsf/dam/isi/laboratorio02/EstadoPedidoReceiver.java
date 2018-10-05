@@ -25,6 +25,7 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
+            System.out.println("recibi broadcast");
         if(intent.getAction()!=null) switch (intent.getAction()){
             case ESTADO_ACEPTADO:{
                 if(intent.hasExtra("idPedido")){
@@ -45,7 +46,29 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
                             .build();
 
                     NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
-                    notifManager.notify(192548,notifAceptado);
+                    notifManager.notify((int)(Math.random()*10000),notifAceptado);
+                }
+                break;
+            }
+            case ESTADO_EN_PREPARACION:{
+                if(intent.hasExtra("idPedido")){
+                    Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+
+                    Intent destino = new Intent(context, VerHistorialActivity.class);
+                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
+                    Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
+                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            .setContentTitle("Tu pedido esta en preparacion")
+                            .setContentText("El costo será de "+String.format("$%.2f", p.total())+
+                                    "\nPrevisto el envio para "+p.getFecha())
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .build();
+
+                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                    notifManager.notify((int)(Math.random()*10000),notifEnPreparacion);
                 }
             }
         }
