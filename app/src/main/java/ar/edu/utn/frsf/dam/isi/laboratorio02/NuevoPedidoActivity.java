@@ -3,6 +3,8 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -76,8 +78,17 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         btnFinalizarPedido = (Button) findViewById(R.id.btnFinalizarPedido);
         editPedidoCorreo = (EditText) findViewById(R.id.editPedidoCorreo);
 
+
+
         tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
         listaProductosPedido.setAdapter(adaptadorDetallePedido);
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        optPedidoRetira.setChecked(preferencias.getBoolean("preferenciaRetirar",false));
+        optPedidoEnviar.setChecked(!preferencias.getBoolean("preferenciaRetirar",true));
+        editPedidoCorreo.setText(preferencias.getString("preferenciaCorreoElectronico",""));
+
+
 
         System.out.println("nuevoPedidoActivity");
 
