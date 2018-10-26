@@ -31,16 +31,16 @@ public class CategoriaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Runnable rAceptarPedidos = new Runnable() {
+                Runnable rCrearCategoria = new Runnable() {
                     @Override
                     public void run() {
-                        try {
+                       /* try {
                             Thread.currentThread().sleep(1);
                             txtNombreCategoria.setText("");
                         } catch (InterruptedException e) {
                             e.printStackTrace();
 
-                        }
+                        }*/
                         Categoria cat = new Categoria();
                         cat.setNombre(txtNombreCategoria.getText().toString());
                         CategoriaRest categoriaRest = new CategoriaRest();
@@ -54,9 +54,9 @@ public class CategoriaActivity extends AppCompatActivity {
                         }
                     }
                 };
-
-                Thread hiloActualizacionEstadoPedidos = new Thread(rAceptarPedidos);
-                hiloActualizacionEstadoPedidos.start();
+                System.out.println("corrio hilo");
+                Thread hiloCrearCategoria = new Thread(rCrearCategoria);
+                hiloCrearCategoria.start();
             }
         });
 
