@@ -34,29 +34,30 @@ public class CategoriaActivity extends AppCompatActivity {
                 Runnable rCrearCategoria = new Runnable() {
                     @Override
                     public void run() {
-                       /* try {
-                            Thread.currentThread().sleep(1);
-                            txtNombreCategoria.setText("");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-
-                        }*/
                         Categoria cat = new Categoria();
                         cat.setNombre(txtNombreCategoria.getText().toString());
                         CategoriaRest categoriaRest = new CategoriaRest();
                         try {
                             categoriaRest.crearCategoria(cat);
-                            Toast.makeText(CategoriaActivity.this,"Categoria creada!",Toast.LENGTH_SHORT).show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    txtNombreCategoria.setText("");
+                                    Toast.makeText(CategoriaActivity.this, "Categoria creada!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
+
+
                 };
-                System.out.println("corrio hilo");
                 Thread hiloCrearCategoria = new Thread(rCrearCategoria);
                 hiloCrearCategoria.start();
+
             }
         });
 

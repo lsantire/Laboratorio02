@@ -28,7 +28,7 @@ public class CategoriaRest {
         JSONObject categoriaJson = new JSONObject();
         categoriaJson.put("nombre", c.getNombre());
 //Abrir una conexión al servidor para enviar el POST
-        URL url = new URL( "http://192.168.0.18:5000/categorias");
+        URL url = new URL( "http://192.168.1.105:5000/categorias");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setChunkedStreamingMode(0);
         urlConnection.setRequestProperty("Content-Type","application/json");
