@@ -1,9 +1,6 @@
-package ar.edu.utn.frsf.dam.isi.laboratorio02;
+package ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson;
 
-import android.util.JsonWriter;
 import android.util.Log;
-
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,13 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-import retrofit2.http.POST;
 
 public class CategoriaRest {
 
@@ -35,7 +30,7 @@ public class CategoriaRest {
         JSONObject categoriaJson = new JSONObject();
         categoriaJson.put("nombre", c.getNombre());
 //Abrir una conexión al servidor para enviar el POST
-        URL url = new URL("http://192.168.1.105:5000/categorias");
+        URL url = new URL("http://10.0.2.2:5000/categorias");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setChunkedStreamingMode(0);
         urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -87,7 +82,7 @@ public class CategoriaRest {
         HttpURLConnection urlConnection = null;
         InputStream in = null;
         // GESTIONAR LA CONEXION
-        URL url = new URL("http://192.168.1.105:5000/categorias");
+        URL url = new URL("http://10.0.2.2:5000/categorias");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestProperty("Accept-Type", "application/json");
         urlConnection.setRequestMethod("GET");
@@ -112,11 +107,9 @@ public class CategoriaRest {
 
             // iterar todas las entradas del arreglo
             for (int i = 0; i < listaCategorias.length(); i++) {
-                System.out.println("DAJDBASIPBDAISHDBASPYDBAPSYDBL"    + listaCategorias.getJSONObject(i).getString("nombre"));
                 Categoria cat = new Categoria();
                 cat.setNombre(listaCategorias.getJSONObject(i).getString("nombre"));
                 cat.setId(listaCategorias.getJSONObject(i).getInt("id"));
-                //System.out.print(cat.getNombre());
                 resultado.add(cat);
             }
         } else {
