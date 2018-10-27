@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="ar.edu.utn.frsf.dam.isi.laboratorio02">
-    <uses-permission android:name="android.permission.INTERNET"
+
+    <uses-permission
+        android:name="android.permission.INTERNET"
         tools:ignore="WrongManifestParent" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,8 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true" >
-
+        android:usesCleartextTraffic="true">
         <activity android:name=".VerProductosActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -27,8 +29,6 @@
         </activity>
         <activity android:name=".NuevoPedidoActivity" />
         <activity android:name=".VerHistorialActivity" />
-
-
 
         <receiver
             android:name=".EstadoPedidoReceiver"
@@ -57,7 +57,8 @@
         </service>
 
         <activity android:name=".PreferenciasCompartidas" />
-        <activity android:name=".CategoriaActivity"/>
+        <activity android:name=".CategoriaActivity" />
+        <activity android:name=".GestionProductoActivity"></activity>
     </application>
 
 </manifest>

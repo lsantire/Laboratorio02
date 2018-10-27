@@ -1,5 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.text.Editable;
+
 import java.util.Objects;
 
 public class Producto {
