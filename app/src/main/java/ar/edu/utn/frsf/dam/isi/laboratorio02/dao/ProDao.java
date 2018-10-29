@@ -8,30 +8,29 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
-
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 @Dao
-public interface CatDao {
+public interface ProDao {
 
-    @Query("SELECT * FROM Categoria")
-    List<Categoria> getAll();
+    @Query("SELECT * FROM producto")
+    List<Producto> getAll();
 
-    @Query("SELECT * FROM categoria WHERE id IN (:catId)")
-    List<Categoria> loadAllByIds(int[] catId);
+    @Query("SELECT * FROM producto WHERE id IN (:userIds)")
+    List<Producto> loadAllByIds(int[] userIds);
 
-    /*
+/*
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND "
             + "last_name LIKE :last LIMIT 1")
     */
 
     @Update
-    void update(Categoria... cat);
+    void update(Producto... prod);
 
     @Insert
-    void insert(Categoria... cat);
+    void insert(Producto... prod);
 
     @Delete
-    void delete(Categoria... cat);
+    void delete(Producto... prod);
 
 }

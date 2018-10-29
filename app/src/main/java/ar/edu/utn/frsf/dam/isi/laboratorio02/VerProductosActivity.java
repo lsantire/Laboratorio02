@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
@@ -63,15 +65,15 @@ public class VerProductosActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                CategoriaRest catRest = new CategoriaRest();
-                try {
-                    categorias = catRest.listarTodas();
+                //CategoriaRest catRest = new CategoriaRest();
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
+                try {
+                    //categorias = catRest.listarTodas();
+                    RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                    categorias = RoomMyProject.getAll();
+
+                } catch (Exception e){e.printStackTrace();}
                 categoriasAdapter = new ArrayAdapter<Categoria>(VerProductosActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
 
 
@@ -109,7 +111,7 @@ public class VerProductosActivity extends AppCompatActivity {
             }
         };
         Thread hiloCargarCombo = new Thread(r);
-        hiloCargarCombo.start();|
+        hiloCargarCombo.start();
 
 /*
         spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

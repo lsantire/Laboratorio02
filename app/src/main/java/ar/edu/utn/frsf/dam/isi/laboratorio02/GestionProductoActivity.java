@@ -20,6 +20,7 @@ import java.util.List;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.RestClient;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 import retrofit2.Call;
@@ -39,9 +40,10 @@ public class GestionProductoActivity extends AppCompatActivity {
     private Button btnBorrar;
     private ArrayAdapter<Categoria> comboAdapter;
     private Categoria catAux;
+    private List<Categoria> categorias;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestion_producto);
         opcionNuevoBusqueda = (ToggleButton) findViewById(R.id.abmProductoAltaNuevo);
@@ -75,16 +77,23 @@ public class GestionProductoActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                CategoriaRest catRest = new CategoriaRest();
-                List<Categoria> categorias = null;
+               /* CategoriaRest catRest = new CategoriaRest();
+                List<Categoria> categorias = null;*/
+
+
+
+
                 try {
-                    categorias = catRest.listarTodas();
+                    RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                    categorias = RoomMyProject.getAll(); //Trea todas las categorias
+
+                   // categorias = catRest.listarTodas();
+
                     comboAdapter = new ArrayAdapter<Categoria>(GestionProductoActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }catch (
+                        Exception e){e.printStackTrace();
                 }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
