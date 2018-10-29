@@ -5,8 +5,8 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Update;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.Mapeo.CategoriaDao;
 
 @Dao
 public interface CatDao {
@@ -22,12 +22,12 @@ public interface CatDao {
     */
 
     @Update
-    void update(CategoriaDao cat);
+    void update(Categoria cat);
 
     @Insert
-    void insert(CategoriaDao cat);
+    void insert(Categoria cat);
 
     @Delete
-    void delete(CategoriaDao cat);
+    void delete(Categoria cat);
 
 }
