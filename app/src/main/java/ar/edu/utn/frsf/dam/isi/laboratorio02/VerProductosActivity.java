@@ -109,7 +109,7 @@ public class VerProductosActivity extends AppCompatActivity {
             }
         };
         Thread hiloCargarCombo = new Thread(r);
-        hiloCargarCombo.start();
+        hiloCargarCombo.start();|
 
 /*
         spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
