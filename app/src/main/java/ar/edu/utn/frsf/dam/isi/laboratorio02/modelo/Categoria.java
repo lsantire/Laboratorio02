@@ -11,13 +11,13 @@ import java.util.UUID;
 public class Categoria {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    private int id;
 
     @ColumnInfo(name = "Nombre")
     private String nombre;
 
     public Categoria(){
-        this.id = Integer.parseInt(UUID.randomUUID().toString());
+        //this.id = Integer.parseInt(UUID.randomUUID().toString());
     }
 
 

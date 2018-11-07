@@ -123,8 +123,8 @@ public class GestionProductoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!nombreProducto.getText().toString().isEmpty() && !descProducto.getText().toString().isEmpty() && !precioProducto.getText().toString().isEmpty()) {
-                    Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(String.valueOf(precioProducto.getText())), catAux);
-                    ProductoRetrofit clienteRest = RestClient.getInstance().getRetrofit().create(ProductoRetrofit.class);
+                    //Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(String.valueOf(precioProducto.getText())), catAux);
+                    /*ProductoRetrofit clienteRest = RestClient.getInstance().getRetrofit().create(ProductoRetrofit.class);
                     Call<Producto> altaCall = clienteRest.crearProducto(p);
                     altaCall.enqueue(new Callback<Producto>() {
                         @Override
@@ -139,7 +139,32 @@ public class GestionProductoActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<Producto> call, Throwable t) {
                         }
-                    });
+                    });*/
+
+                    Runnable rCrearCategoria = new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Producto p = new Producto(nombreProducto.getText().toString(), descProducto.getText().toString(), Double.parseDouble(String.valueOf(precioProducto.getText())), catAux);
+
+                            try {
+                                // categoriaRest.crearCategoria(cat);
+                                RoomMyProject.insertProducto(p);
+                                RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        Toast.makeText(GestionProductoActivity.this, "Categoria creada!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }catch (Exception e){e.printStackTrace();}
+                        }
+
+
+                    };
+                    Thread hiloCrearProducto = new Thread(rCrearCategoria);
+                    hiloCrearProducto.start();
 
                 } else {
                     Toast.makeText(GestionProductoActivity.this, "Complete los campos!", Toast.LENGTH_SHORT).show();
@@ -152,7 +177,7 @@ public class GestionProductoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!idProductoBuscar.getText().toString().isEmpty()) {
-                    ProductoRetrofit clienteRest = RestClient.getInstance().getRetrofit().create(ProductoRetrofit.class);
+                   /* ProductoRetrofit clienteRest = RestClient.getInstance().getRetrofit().create(ProductoRetrofit.class);
                     Call<Producto> altaCall = clienteRest.buscarProductoPorId(Integer.parseInt(idProductoBuscar.getText().toString()));
                     altaCall.enqueue(new Callback<Producto>() {
                         @Override
@@ -175,7 +200,9 @@ public class GestionProductoActivity extends AppCompatActivity {
                         public void onFailure(Call<Producto> call, Throwable t) {
 
                         }
-                    });
+                    });*/
+
+
 
                 } else {
                     Toast.makeText(GestionProductoActivity.this, "Complete el id", Toast.LENGTH_SHORT).show();

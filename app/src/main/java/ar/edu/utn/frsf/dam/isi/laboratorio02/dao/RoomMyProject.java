@@ -67,6 +67,10 @@ public class RoomMyProject {
         return proDao.loadAllByIds(prodId);
     }
 
+    public static List<Producto> getByIdCat(int idCategoria){
+        return proDao.getByIdCat(idCategoria);
+    }
+
 
     private RoomMyProject() {
     }

@@ -19,6 +19,9 @@ public interface ProDao {
     @Query("SELECT * FROM producto WHERE id IN (:userIds)")
     List<Producto> loadAllByIds(int[] userIds);
 
+    @Query("SELECT * FROM producto p WHERE p.cat_id = (:idCategoria)")
+    List<Producto> getByIdCat(int idCategoria);
+
 /*
     @Query("SELECT * FROM user WHERE first_name LIKE :first AND "
             + "last_name LIKE :last LIMIT 1")

@@ -25,7 +25,7 @@ public class Producto {
 
 
     public Producto(){
-        this.id = Integer.parseInt(UUID.randomUUID().toString());
+        /*this.id = Integer.parseInt(UUID.randomUUID().toString());*/
     }
 
     public Producto(String nombre, String descripcion, Double precio, Categoria categoria) {
