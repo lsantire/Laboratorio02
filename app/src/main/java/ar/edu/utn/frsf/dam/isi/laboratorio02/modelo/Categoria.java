@@ -5,15 +5,21 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 public class Categoria {
 
     @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    private int id;
 
     @ColumnInfo(name = "Nombre")
     private String nombre;
+
+    public Categoria(){
+        //this.id = Integer.parseInt(UUID.randomUUID().toString());
+    }
+
 
 
     public Categoria(Integer id, String nombre) {
@@ -25,8 +31,6 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-    public Categoria() {
-    }
 
     public Integer getId() {
         return id;

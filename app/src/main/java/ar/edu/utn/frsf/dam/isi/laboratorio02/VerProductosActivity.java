@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
@@ -33,6 +35,7 @@ public class VerProductosActivity extends AppCompatActivity {
     private ArrayAdapter<Categoria> adaptadorCategorias;
     private ProductoRepository repositorioProductos;
     private int idProductoSeleccionado;
+    private Categoria categoriaSeleccionada;
 
     View selectedView;
 
@@ -56,60 +59,91 @@ public class VerProductosActivity extends AppCompatActivity {
         btnAgregarProducto = (Button) findViewById(R.id.btnAgregarProducto);
         editCantidadProducto = (EditText) findViewById(R.id.editCantidadProducto);
 
-       // adaptadorCategorias = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, repositorioProductos.getCategorias());
-       // spinnerCategorias.setAdapter(adaptadorCategorias);
+        // adaptadorCategorias = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, repositorioProductos.getCategorias());
+        // spinnerCategorias.setAdapter(adaptadorCategorias);
+
+        productos = new ArrayList<>();
+        categorias = new ArrayList<>();
+        categoriasAdapter = new ArrayAdapter<Categoria>(VerProductosActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
+        adaptadorProductos = new ArrayAdapter<Producto>(VerProductosActivity.this, android.R.layout.simple_list_item_single_choice, productos);
+        listProductos.setAdapter(adaptadorProductos);
+        spinnerCategorias.setAdapter(categoriasAdapter);
 
         Runnable r = new Runnable() {
             @Override
             public void run() {
 
-                CategoriaRest catRest = new CategoriaRest();
-                try {
-                    categorias = catRest.listarTodas();
+                //CategoriaRest catRest = new CategoriaRest();
 
-                } catch (IOException e) {
+
+                //try {
+                    //categorias = catRest.listarTodas();
+                    RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                    categorias = RoomMyProject.getAll();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            categoriasAdapter = new ArrayAdapter<Categoria>(VerProductosActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
+                            spinnerCategorias.setAdapter(categoriasAdapter);
+                        }
+                    });
+
+                /*} catch (Exception e) {
                     e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                categoriasAdapter = new ArrayAdapter<Categoria>(VerProductosActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
+                }*/
 
+            }
+        };
 
-                runOnUiThread(new Runnable() {
+        Thread hiloCargarCombo = new Thread(r);
+        hiloCargarCombo.start();
+
+        spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int
+                    position, long id) {
+
+                //productos = repositorioProductos.buscarPorCategoria((Categoria) parent.getItemAtPosition(position));
+                categoriaSeleccionada = (Categoria) parent.getItemAtPosition(position);
+                System.out.println("spinner listener");
+
+                Runnable r2 = new Runnable() {
                     @Override
                     public void run() {
 
-                        spinnerCategorias.setAdapter(categoriasAdapter);
-                        spinnerCategorias.setSelection(0);
-                        productos = new ArrayList<>();
+                        //CategoriaRest catRest = new CategoriaRest();
 
-                        spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int
-                                    position, long id) {
 
-                                adaptadorProductos.clear();
-                                productos = repositorioProductos.buscarPorCategoria((Categoria) parent.getItemAtPosition(position));
-                                adaptadorProductos.addAll(repositorioProductos.buscarPorCategoria(
-                                        (Categoria) parent.getItemAtPosition(position))
-                                );
-
-                                adaptadorProductos.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
-                        });
-                        adaptadorProductos = new ArrayAdapter<Producto>(VerProductosActivity.this, android.R.layout.simple_list_item_single_choice, productos);
-                        listProductos = (ListView) findViewById(R.id.listProductos);
-                        listProductos.setAdapter(adaptadorProductos);
+                        //try {
+                            //categorias = catRest.listarTodas();
+                            RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                            productos = RoomMyProject.getByIdCat(categoriaSeleccionada.getId());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adaptadorProductos = new ArrayAdapter<Producto>(VerProductosActivity.this, android.R.layout.simple_list_item_single_choice, productos);
+                                    listProductos.setAdapter(adaptadorProductos);
+                                    System.out.println("ID re puto "+categoriaSeleccionada.getId());
+                                    System.out.println(productos.size());
+                                }
+                            });
+                       /* } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
                     }
-                });
+                };
+                Thread hiloActualizarProductos = new Thread(r2);
+                hiloActualizarProductos.start();
+
             }
-        };
-        Thread hiloCargarCombo = new Thread(r);
-        hiloCargarCombo.start();|
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+
 
 /*
         spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
