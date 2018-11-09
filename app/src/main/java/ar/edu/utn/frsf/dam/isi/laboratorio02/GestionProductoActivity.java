@@ -12,12 +12,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.List;
 
-import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.CategoriaRest;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.RestClient;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRetrofit;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
@@ -41,6 +37,8 @@ public class GestionProductoActivity extends AppCompatActivity {
     private ArrayAdapter<Categoria> comboAdapter;
     private Categoria catAux;
     private List<Categoria> categorias;
+    private int idProd;
+    private Producto prodAux;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -66,7 +64,7 @@ public class GestionProductoActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 btnBuscar.setEnabled(isChecked);
-                btnBorrar.setEnabled(isChecked);
+                btnBorrar.setEnabled(false);
                 btnGuardar.setEnabled(!isChecked);
                 idProductoBuscar.setEnabled(isChecked);
             }
@@ -81,17 +79,16 @@ public class GestionProductoActivity extends AppCompatActivity {
                 List<Categoria> categorias = null;*/
 
 
-
-
                 try {
                     RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
                     categorias = RoomMyProject.getAll(); //Trea todas las categorias
 
-                   // categorias = catRest.listarTodas();
+                    // categorias = catRest.listarTodas();
 
                     comboAdapter = new ArrayAdapter<Categoria>(GestionProductoActivity.this, android.R.layout.simple_spinner_dropdown_item, categorias);
-                }catch (
-                        Exception e){e.printStackTrace();
+                } catch (
+                        Exception e) {
+                    e.printStackTrace();
                 }
 
                 runOnUiThread(new Runnable() {
@@ -149,16 +146,18 @@ public class GestionProductoActivity extends AppCompatActivity {
 
                             try {
                                 // categoriaRest.crearCategoria(cat);
-                                RoomMyProject.insertProducto(p);
                                 RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                                RoomMyProject.insertProducto(p);
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-
-                                        Toast.makeText(GestionProductoActivity.this, "Categoria creada!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(GestionProductoActivity.this, "Producto creada!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                            }catch (Exception e){e.printStackTrace();}
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
 
@@ -201,8 +200,41 @@ public class GestionProductoActivity extends AppCompatActivity {
 
                         }
                     });*/
+                    idProd = Integer.parseInt(idProductoBuscar.getText().toString());
+
+                    Runnable rCrearCategoria = new Runnable() {
+                        @Override
+                        public void run() {
+                            RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                                // categoriaRest.crearCategoria(cat);
+                                prodAux = (Producto) RoomMyProject.getProdById(idProd);
 
 
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (prodAux != null) {
+                                            nombreProducto.setText(prodAux.getNombre());
+                                            descProducto.setText(prodAux.getDescripcion());
+                                            precioProducto.setText(prodAux.getPrecio().toString());
+                                            comboCategorias.setSelection(comboAdapter.getPosition(prodAux.getCategoria()));
+                                            btnBorrar.setEnabled(true);
+                                        } else {
+                                            btnBorrar.setEnabled(false);
+                                            nombreProducto.setText("");
+                                            descProducto.setText("");
+                                            precioProducto.setText("");
+                                            comboCategorias.setSelection(0);
+                                            Toast.makeText(GestionProductoActivity.this, "No encontrado", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    }
+                                });
+                        }
+
+                    };
+                    Thread hiloBuscarProd = new Thread(rCrearCategoria);
+                    hiloBuscarProd.start();
 
                 } else {
                     Toast.makeText(GestionProductoActivity.this, "Complete el id", Toast.LENGTH_SHORT).show();
@@ -215,6 +247,7 @@ public class GestionProductoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!idProductoBuscar.getText().toString().isEmpty()) {
+                   /*
                     ProductoRetrofit clienteRest = RestClient.getInstance().getRetrofit().create(ProductoRetrofit.class);
                     Call<Producto> altaCall = clienteRest.borrar(Integer.parseInt(idProductoBuscar.getText().toString()));
                     altaCall.enqueue(new Callback<Producto>() {
@@ -224,13 +257,45 @@ public class GestionProductoActivity extends AppCompatActivity {
                             descProducto.setText("");
                             precioProducto.setText("");
                             comboCategorias.setSelection(0);
-                            Toast.makeText(GestionProductoActivity.this,"Borrado!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GestionProductoActivity.this, "Borrado!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onFailure(Call<Producto> call, Throwable t) {
                         }
                     });
+*/
+
+                    Runnable rCrearCategoria = new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+                                // categoriaRest.crearCategoria(cat);
+                                RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+                                RoomMyProject.deleteProducto(prodAux);
+
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        nombreProducto.setText("");
+                                        descProducto.setText("");
+                                        precioProducto.setText("");
+                                        comboCategorias.setSelection(0);
+                                        btnBorrar.setEnabled(false);
+                                        Toast.makeText(GestionProductoActivity.this, "Borrado!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                    };
+                    Thread hiloBorrarProducto = new Thread(rCrearCategoria);
+                    hiloBorrarProducto.start();
 
                 } else {
                     Toast.makeText(GestionProductoActivity.this, "Complete el id", Toast.LENGTH_SHORT).show();

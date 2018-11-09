@@ -16,8 +16,8 @@ public interface ProDao {
     @Query("SELECT * FROM producto")
     List<Producto> getAll();
 
-    @Query("SELECT * FROM producto WHERE id IN (:userIds)")
-    List<Producto> loadAllByIds(int[] userIds);
+    @Query("SELECT * FROM producto WHERE id = (:prodId)")
+    Producto getProdById(int prodId);
 
     @Query("SELECT * FROM producto p WHERE p.cat_id = (:idCategoria)")
     List<Producto> getByIdCat(int idCategoria);

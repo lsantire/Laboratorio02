@@ -49,7 +49,7 @@ public class RoomMyProject {
 
     public static List<Producto> getAllProducto(){return proDao.getAll();}
 
-    public static List<Producto> loadAllByIdsProducto(int[] productoIds){return proDao.loadAllByIds(productoIds);}
+    public static Producto getProdById(int productoIds){return proDao.getProdById(productoIds);}
 
     public static void insertProducto(Producto producto) {
         proDao.insert(producto);
@@ -63,9 +63,6 @@ public class RoomMyProject {
         proDao.update(producto);
     }
 
-    public static List<Producto> loadAllByIdsProd(int[] prodId) {
-        return proDao.loadAllByIds(prodId);
-    }
 
     public static List<Producto> getByIdCat(int idCategoria){
         return proDao.getByIdCat(idCategoria);
