@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import java.util.GregorianCalendar;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
@@ -78,6 +80,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         btnFinalizarPedido = (Button) findViewById(R.id.btnFinalizarPedido);
         editPedidoCorreo = (EditText) findViewById(R.id.editPedidoCorreo);
 
+        RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
 
 
         tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
@@ -98,7 +101,8 @@ public class NuevoPedidoActivity extends AppCompatActivity {
             idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
 
             if (idPedido >= 0) {
-                pedido = repositorioPedidos.buscarPorId(idPedido);
+                //pedido = repositorioPedidos.buscarPorId(idPedido); ESTATICO
+                pedido = RoomMyProject.loadByIdPedido(idPedido);
                 editPedidoCorreo.setText(pedido.getMailContacto());
                 editDireccion.setText(pedido.getDireccionEnvio());
                 editHoraEntrega.setText(sdf.format(pedido.getFecha()));
@@ -219,7 +223,9 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     pedido.setEstado(Pedido.Estado.REALIZADO);
                     pedido.setMailContacto(editPedidoCorreo.getText().toString());
                     pedido.setRetirar(optPedidoRetira.isChecked());
-                    repositorioPedidos.guardarPedido(pedido);
+
+                   // repositorioPedidos.guardarPedido(pedido); ESTATICO
+                    RoomMyProject.insertPedido(pedido);
 
                     Runnable rAceptarPedidos = new Runnable() {
                         @Override
@@ -235,7 +241,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                             }
 
                             //buscar pedidos no aceptados y aceptarlos automaticamente
-                            for(Pedido p:repositorioPedidos.getLista()){
+                            for(Pedido p: RoomMyProject.getAllPedido() /*repositorioPedidos.getLista() VIEJO*/){
                                 if(p.getEstado().equals(Pedido.Estado.REALIZADO))
                                 {
                                     p.setEstado(Pedido.Estado.ACEPTADO);
@@ -293,7 +299,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     cantidad = data.getIntExtra("cantidad", -1);
                     idProductoAgregado = data.getIntExtra("idProducto", -1);
-                    pedido.agregarDetalle(new PedidoDetalle(cantidad, repositorioProductos.buscarPorId(idProductoAgregado)));
+                    pedido.agregarDetalle(new PedidoDetalle(cantidad, RoomMyProject.getProdById(idProductoAgregado) /*repositorioProductos.buscarPorId(idProductoAgregado)*/));
                     adaptadorDetallePedido.notifyDataSetChanged();
                     tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
                 }

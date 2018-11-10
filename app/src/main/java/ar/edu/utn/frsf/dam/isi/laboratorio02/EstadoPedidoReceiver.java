@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class EstadoPedidoReceiver extends BroadcastReceiver {
@@ -21,6 +22,7 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
     PedidoRepository repositorioPedidos = new PedidoRepository();
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
@@ -29,7 +31,9 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
         if(intent.getAction()!=null) switch (intent.getAction()){
             case ESTADO_ACEPTADO:{
                 if(intent.hasExtra("idPedido")){
-                    Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+                   // Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido")); VIEJO ESTATICO
+
+                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
                     Intent destino = new Intent(context, NuevoPedidoActivity.class);
                     destino.putExtra("idPedidoSeleccionado",p.getId());
@@ -52,7 +56,9 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
             }
             case ESTADO_EN_PREPARACION:{
                 if(intent.hasExtra("idPedido")){
-                    Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+                   // Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+
+                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
                     Intent destino = new Intent(context, VerHistorialActivity.class);
                     destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -75,7 +81,9 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
             }
             case ESTADO_LISTO: {
                 if (intent.hasExtra("idPedido")) {
-                    Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+                    //Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
+
+                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
                     Intent destino = new Intent(context, VerHistorialActivity.class);
                     destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

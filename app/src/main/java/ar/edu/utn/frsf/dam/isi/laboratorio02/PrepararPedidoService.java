@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PrepararPedidoService extends IntentService {
@@ -20,9 +21,10 @@ public class PrepararPedidoService extends IntentService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
 
         PedidoRepository repositorioPedidos = new PedidoRepository();
-        for(Pedido p:repositorioPedidos.getLista()){
+        for(Pedido p: RoomMyProject.getAllPedido()  /*repositorioPedidos.getLista() VIEJO */){
             if(p.getEstado().equals(Pedido.Estado.ACEPTADO)){
                 p.setEstado(Pedido.Estado.EN_PREPARACION);
                 Intent intentEnPreparacion = new Intent(PrepararPedidoService.this,EstadoPedidoReceiver.class);
