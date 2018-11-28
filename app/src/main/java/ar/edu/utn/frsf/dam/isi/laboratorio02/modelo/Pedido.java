@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +20,7 @@ public class Pedido {
 
     public enum Estado { REALIZADO, ACEPTADO, RECHAZADO,EN_PREPARACION,LISTO,ENTREGADO,CANCELADO}
     @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    private int id;
     @TypeConverters(FechaConverter.class)
     private Date fecha;
     @Ignore
@@ -31,7 +32,7 @@ public class Pedido {
     @ColumnInfo
     private String mailContacto;
     @ColumnInfo
-    private Boolean retirar;
+    private boolean retirar;
 
     public String getDireccionEnvio() {
         return direccionEnvio;
@@ -112,6 +113,7 @@ public class Pedido {
     public void agregarDetalle(PedidoDetalle det){
         if(this.detalle == null) this.detalle = new ArrayList<>();
         this.detalle.add(det);
+        if(det.getPedido()==null) det.setPedido(this);
     }
 
     public void quitarDetalle(PedidoDetalle det){

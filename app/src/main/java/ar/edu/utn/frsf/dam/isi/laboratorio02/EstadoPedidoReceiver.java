@@ -22,35 +22,54 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
 
     PedidoRepository repositorioPedidos = new PedidoRepository();
 
+    private Context context;
+    private Intent intent;
+
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context contextp, Intent intentp) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
             System.out.println("recibi broadcast");
+            context=contextp;
+            intent=intentp;
         if(intent.getAction()!=null) switch (intent.getAction()){
             case ESTADO_ACEPTADO:{
                 if(intent.hasExtra("idPedido")){
                    // Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido")); VIEJO ESTATICO
 
-                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
+                    Runnable rGetPedido = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
-                    Intent destino = new Intent(context, NuevoPedidoActivity.class);
-                    destino.putExtra("idPedidoSeleccionado",p.getId());
-                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Intent destino = new Intent(context, NuevoPedidoActivity.class);
+                                destino.putExtra("idPedidoSeleccionado",p.getId());
+                                destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
-                    Notification notifAceptado = new NotificationCompat.Builder(context, "CANAL01")
-                            .setSmallIcon(R.drawable.ic_launcher_background)
-                            .setContentTitle("Tu pedido fue aceptado")
-                            .setContentText("El costo será de "+String.format("$%.2f", p.total())+
-                                    "\nPrevisto el envio para "+p.getFecha())
-                            .setContentIntent(pendingIntent)
-                            .setAutoCancel(true)
-                            .build();
+                                PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Notification notifAceptado = new NotificationCompat.Builder(context, "CANAL01")
+                                        .setSmallIcon(R.drawable.ic_launcher_background)
+                                        .setContentTitle("Tu pedido fue aceptado")
+                                        .setContentText("El costo será de "+String.format("$%.2f", p.total())+
+                                                "\nPrevisto el envio para "+p.getFecha())
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true)
+                                        .build();
 
-                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
-                    notifManager.notify((int)(Math.random()*10000),notifAceptado);
+                                NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                                notifManager.notify((int)(Math.random()*10000),notifAceptado);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    Thread hiloGetPedido = new Thread(rGetPedido);
+                    hiloGetPedido.start();
+
+
                 }
                 break;
             }
@@ -58,23 +77,37 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
                 if(intent.hasExtra("idPedido")){
                    // Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
 
-                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
+                    Runnable rGetPedido = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
-                    Intent destino = new Intent(context, VerHistorialActivity.class);
-                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Intent destino = new Intent(context, VerHistorialActivity.class);
+                                destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
-                    Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
-                            .setSmallIcon(R.drawable.ic_launcher_background)
-                            .setContentTitle("Tu pedido esta en preparacion")
-                            .setContentText("El costo será de "+String.format("$%.2f", p.total())+
-                                    "\nPrevisto el envio para "+p.getFecha())
-                            .setContentIntent(pendingIntent)
-                            .setAutoCancel(true)
-                            .build();
+                                PendingIntent pendingIntent = PendingIntent.getActivity(context,0,destino,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
+                                        .setSmallIcon(R.drawable.ic_launcher_background)
+                                        .setContentTitle("Tu pedido esta en preparacion")
+                                        .setContentText("El costo será de "+String.format("$%.2f", p.total())+
+                                                "\nPrevisto el envio para "+p.getFecha())
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true)
+                                        .build();
 
-                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
-                    notifManager.notify((int)(Math.random()*10000),notifEnPreparacion);
+                                NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                                notifManager.notify((int)(Math.random()*10000),notifEnPreparacion);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    Thread hiloGetPedido = new Thread(rGetPedido);
+                    hiloGetPedido.start();
+
+
                 }
                 break;
 
@@ -83,23 +116,37 @@ public class EstadoPedidoReceiver extends BroadcastReceiver {
                 if (intent.hasExtra("idPedido")) {
                     //Pedido p = repositorioPedidos.buscarPorId(intent.getExtras().getInt("idPedido"));
 
-                    Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
+                    Runnable rGetPedido = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                Pedido p = RoomMyProject.loadByIdPedido(intent.getExtras().getInt("idPedido"));
 
-                    Intent destino = new Intent(context, VerHistorialActivity.class);
-                    destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Intent destino = new Intent(context, VerHistorialActivity.class);
+                                destino.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, destino, PendingIntent.FLAG_UPDATE_CURRENT);
-                    Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
-                            .setSmallIcon(R.drawable.ic_launcher_background)
-                            .setContentTitle("Tu pedido esta listo")
-                            .setContentText("El costo será de " + String.format("$%.2f", p.total()) +
-                                    "\nPrevisto el envio para " + p.getFecha())
-                            .setContentIntent(pendingIntent)
-                            .setAutoCancel(true)
-                            .build();
+                                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, destino, PendingIntent.FLAG_UPDATE_CURRENT);
+                                Notification notifEnPreparacion = new NotificationCompat.Builder(context, "CANAL01")
+                                        .setSmallIcon(R.drawable.ic_launcher_background)
+                                        .setContentTitle("Tu pedido esta listo")
+                                        .setContentText("El costo será de " + String.format("$%.2f", p.total()) +
+                                                "\nPrevisto el envio para " + p.getFecha())
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true)
+                                        .build();
 
-                    NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
-                    notifManager.notify((int) (Math.random() * 10000), notifEnPreparacion);
+                                NotificationManagerCompat notifManager = NotificationManagerCompat.from(context);
+                                notifManager.notify((int) (Math.random() * 10000), notifEnPreparacion);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    Thread hiloGetPedido = new Thread(rGetPedido);
+                    hiloGetPedido.start();
+
+
                 }
                 break;
             }

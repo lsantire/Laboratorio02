@@ -11,4 +11,12 @@ public class PedidoConDetalles {
 
     @Relation(parentColumn = "id", entityColumn = "ped_id", entity = PedidoDetalle.class)
     public List<PedidoDetalle> detalle;
+
+    public List<PedidoDetalle> getDetalle(){
+        return detalle;
+    }
+
+    public Pedido getPedido(){
+        return pedido;
+    }
 }

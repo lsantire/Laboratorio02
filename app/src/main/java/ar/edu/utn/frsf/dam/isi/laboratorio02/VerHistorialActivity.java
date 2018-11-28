@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ar.edu.utn.frsf.dam.isi.laboratorio02.Adaptadores.PedidoAdaptador;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
@@ -21,6 +24,8 @@ public class VerHistorialActivity extends AppCompatActivity {
     private PedidoRepository pedidosRepository;
     private Button btnHistorialNuevo;
     private Button btnHistorialMenu;
+    private List<Pedido> pedidos;
+
 
 
     @Override
@@ -36,8 +41,26 @@ public class VerHistorialActivity extends AppCompatActivity {
 
         pedidosRepository = new PedidoRepository();
 
-        adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this, RoomMyProject.getAllPedido() /*pedidosRepository.getLista() VIEJO */);
-        lstHistorialPedidos.setAdapter(adaptadorPedidos);
+        Runnable rGetPedidos = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    pedidos = RoomMyProject.getAllPedido();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this, pedidos /*pedidosRepository.getLista() VIEJO */);
+                            lstHistorialPedidos.setAdapter(adaptadorPedidos);
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread hiloGetPedidos = new Thread(rGetPedidos);
+        hiloGetPedidos.start();
 
         btnHistorialMenu.setOnClickListener(new View.OnClickListener() {
             @Override

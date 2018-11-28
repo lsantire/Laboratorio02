@@ -3,10 +3,13 @@ package ar.edu.utn.frsf.dam.isi.laboratorio02.dao;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoConDetalles;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Producto;
 
 public class RoomMyProject {
@@ -15,12 +18,14 @@ public class RoomMyProject {
     private static CatDao catDao;
     private static ProDao proDao;
     private static PedDao pedDao;
-    private static DetalleDao DetalleDao;
+    private static DetalleDao detalleDao;
 
     private RoomMyProject(Context ctx) {
-        DaoAbs db = Room.databaseBuilder(ctx, DaoAbs.class, "dam-pry-2018").fallbackToDestructiveMigration().build();
+        DaoAbs db = Room.databaseBuilder(ctx, DaoAbs.class, "14dam-pry-2018").fallbackToDestructiveMigration().build();
         catDao = db.getCat();
         proDao = db.getPro();
+        pedDao = db.getPed();
+        detalleDao = db.getDetalle();
     }
 
     public static RoomMyProject getInstance(Context ctx) {
@@ -72,24 +77,41 @@ public class RoomMyProject {
     }
 
     public static void insertPedido(Pedido unPedido) {
-        DetalleDao.insertAll(unPedido.getDetalle());
-        pedDao.insertAll(unPedido);
+        System.out.println(unPedido.getDetalle().toString());
+        System.out.println(unPedido.toString());
+        int id = (int)pedDao.insert(unPedido);
+        unPedido.setId(id);
+        for(PedidoDetalle pd : unPedido.getDetalle()) pd.setPedido(unPedido);
+        detalleDao.insertAll(unPedido.getDetalle());
     }
 
     public static List<Pedido> getAllPedido() {
-        List<Pedido> pedidos = pedDao.getAll();
-        for (Pedido p : pedidos) {
-            p.setDetalle(DetalleDao.loadAllByPedidoId(p.getId()));
+        List<PedidoConDetalles> pedidosConDetalles = pedDao.getAll();
+        System.out.println("ACA!!!!!!!!"+pedidosConDetalles.size());
+        List<Pedido> pedidos = new ArrayList();
+        for(PedidoConDetalles p : pedidosConDetalles){
+            System.out.println("ACA!!!!!!!!"+p.getDetalle().size()+" "+p.getPedido());
+            pedidos.add(p.getPedido());
+            for(PedidoDetalle pd : p.getDetalle())
+            {
+                pedidos.get(pedidos.size()-1).agregarDetalle(pd);
+            }
         }
         return pedidos;
     }
 
     public static Pedido loadByIdPedido(Integer pedidoId){
-        int[] pid = {pedidoId};
 
-        Pedido p =pedDao.loadAllByIds(pid).get(0);
-        p.setDetalle(DetalleDao.loadAllByPedidoId(p.getId()));
-        return p;
+        List<PedidoConDetalles> pedidosConDetalles = pedDao.loadAllByIds(pedidoId);
+        for(PedidoConDetalles pcd : pedidosConDetalles){
+            Pedido p = pcd.getPedido();
+            for(PedidoDetalle pd : pcd.getDetalle())
+            {
+                p.agregarDetalle(pd);
+            }
+            return p;
+        }
+        return null;
     }
 
 

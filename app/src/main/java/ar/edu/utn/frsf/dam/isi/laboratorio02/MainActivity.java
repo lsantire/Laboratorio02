@@ -32,19 +32,32 @@ public class MainActivity extends AppCompatActivity {
         RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
 
         if (getIntent().hasExtra("ID_PEDIDO")) {
-            Integer id = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
-            PedidoRepository pedidoRepository = new PedidoRepository();
+            //PedidoRepository pedidoRepository = new PedidoRepository();
             // Pedido pedido = pedidoRepository.buscarPorId(id);
 
-            Pedido pedido = RoomMyProject.loadByIdPedido(id);
+            Runnable rSetListo = new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Integer id = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
+                        Pedido pedido = RoomMyProject.loadByIdPedido(id);
+                        if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
+                            pedido.setEstado(Pedido.Estado.LISTO);
+                            Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
+                            intenListo.putExtra("idPedido", pedido.getId());
+                            intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
+                            sendBroadcast(intenListo);
+                        }
 
-            if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
-                pedido.setEstado(Pedido.Estado.LISTO);
-                Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
-                intenListo.putExtra("idPedido", pedido.getId());
-                intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
-                sendBroadcast(intenListo);
-            }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Thread hiloSetListo = new Thread(rSetListo);
+            hiloSetListo.start();
+
         }
 
         btnNuevoPedido = (Button) findViewById(R.id.btnMainNuevoPedido);
