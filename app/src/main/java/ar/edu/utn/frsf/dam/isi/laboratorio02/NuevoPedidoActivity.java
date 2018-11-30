@@ -37,6 +37,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     }
 
     private int cantidad, idProductoAgregado;
+    private Pedido pedidoParaActualizar;
 
     Bundle extras;
     Pedido pedido;
@@ -280,6 +281,27 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                             for (Pedido p : RoomMyProject.getAllPedido() /*repositorioPedidos.getLista() VIEJO*/) {
                                 if (p.getEstado().equals(Pedido.Estado.REALIZADO)) {
                                     p.setEstado(Pedido.Estado.ACEPTADO);
+                                    pedidoParaActualizar=p;
+
+                                    Runnable rUpdatePedido = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try{
+                                                RoomMyProject.updatePedido(pedidoParaActualizar);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    };
+
+                                    Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                                    hiloUpdatePedido.start();
+                                    try{
+                                        hiloUpdatePedido.join();
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
                                     Intent intentAceptado = new Intent(NuevoPedidoActivity.this, EstadoPedidoReceiver.class);
                                     intentAceptado.putExtra("idPedido", p.getId());
                                     intentAceptado.setAction(EstadoPedidoReceiver.ESTADO_ACEPTADO);

@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnConfiguracion;
     private Button btnCategorias;
     private Button btnProductos;
+    private Pedido pedidoParaActualizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,27 @@ public class MainActivity extends AppCompatActivity {
                         Pedido pedido = RoomMyProject.loadByIdPedido(id);
                         if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
                             pedido.setEstado(Pedido.Estado.LISTO);
+                            pedidoParaActualizar=pedido;
+
+                            Runnable rUpdatePedido = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        RoomMyProject.updatePedido(pedidoParaActualizar);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                            Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                            hiloUpdatePedido.start();
+                            try{
+                                hiloUpdatePedido.join();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
                             Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
                             intenListo.putExtra("idPedido", pedido.getId());
                             intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);

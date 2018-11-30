@@ -13,6 +13,7 @@ public class PrepararPedidoService extends IntentService {
     public PrepararPedidoService() {
         super("PrepararPedidoService");
     }
+    private Pedido pedidoParaActualizar;
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -32,6 +33,28 @@ public class PrepararPedidoService extends IntentService {
                 for (Pedido p : RoomMyProject.getAllPedido()  /*repositorioPedidos.getLista() VIEJO */) {
                     if (p.getEstado().equals(Pedido.Estado.ACEPTADO)) {
                         p.setEstado(Pedido.Estado.EN_PREPARACION);
+
+                        pedidoParaActualizar=p;
+
+                        Runnable rUpdatePedido = new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    RoomMyProject.updatePedido(pedidoParaActualizar);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+
+                        Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                        hiloUpdatePedido.start();
+                        try{
+                            hiloUpdatePedido.join();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
                         Intent intentEnPreparacion = new Intent(PrepararPedidoService.this, EstadoPedidoReceiver.class);
                         intentEnPreparacion.putExtra("idPedido", p.getId());
                         intentEnPreparacion.setAction(EstadoPedidoReceiver.ESTADO_EN_PREPARACION);

@@ -17,6 +17,7 @@ public class RestoMessagingService extends FirebaseMessagingService {
     }
 
     private RemoteMessage remoteMessage2;
+    private Pedido pedidoParaActualizar;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -37,6 +38,27 @@ public class RestoMessagingService extends FirebaseMessagingService {
 
                 if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
                     pedido.setEstado(Pedido.Estado.LISTO);
+                    pedidoParaActualizar=pedido;
+
+                    Runnable rUpdatePedido = new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                RoomMyProject.updatePedido(pedidoParaActualizar);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                    hiloUpdatePedido.start();
+                    try{
+                        hiloUpdatePedido.join();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                     Intent intentListo = new Intent(RestoMessagingService.this, EstadoPedidoReceiver.class);
                     intentListo.putExtra("idPedido", pedido.getId());
                     intentListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);

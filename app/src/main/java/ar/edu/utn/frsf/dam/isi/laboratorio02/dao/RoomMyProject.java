@@ -100,6 +100,11 @@ public class RoomMyProject {
         return pedidos;
     }
 
+    public static void updatePedido(Pedido unPedido)
+    {
+        pedDao.update(unPedido);
+    }
+
     public static Pedido loadByIdPedido(Integer pedidoId){
 
         List<PedidoConDetalles> pedidosConDetalles = pedDao.loadAllByIds(pedidoId);

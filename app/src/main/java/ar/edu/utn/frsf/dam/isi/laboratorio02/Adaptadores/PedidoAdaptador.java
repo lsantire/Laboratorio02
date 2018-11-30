@@ -19,12 +19,14 @@ import ar.edu.utn.frsf.dam.isi.laboratorio02.Holders.PedidoHolder;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.NuevoPedidoActivity;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.R;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.VerHistorialActivity;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PedidoAdaptador extends ArrayAdapter<Pedido> {
 
     private Context ctx;
     private List<Pedido> datos;
+    private Pedido pedidoParaActualizar;
 
     public PedidoAdaptador(Context context, List<Pedido> objects){
         super(context,0, objects);
@@ -55,8 +57,31 @@ public class PedidoAdaptador extends ArrayAdapter<Pedido> {
                         if( pedidoSeleccionado.getEstado().equals(Pedido.Estado.REALIZADO)||
                                 pedidoSeleccionado.getEstado().equals(Pedido.Estado.ACEPTADO)||
                                 pedidoSeleccionado.getEstado().equals(Pedido.Estado.EN_PREPARACION)){
+
                             pedidoSeleccionado.setEstado(Pedido.Estado.CANCELADO);
+                            pedidoParaActualizar=pedidoSeleccionado;
+
+                            Runnable rUpdatePedido = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        RoomMyProject.updatePedido(pedidoParaActualizar);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                            Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                            hiloUpdatePedido.start();
+                            try{
+                                hiloUpdatePedido.join();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                             PedidoAdaptador.this.notifyDataSetChanged();
+
+
                             return;
                         }
                     }
