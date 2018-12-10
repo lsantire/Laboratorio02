@@ -1,16 +1,32 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.text.Editable;
 
 import java.util.Objects;
+import java.util.UUID;
 
+@Entity
 public class Producto {
 
+    @PrimaryKey(autoGenerate = true)
     private Integer id;
+    @ColumnInfo(name = "Nombre")
     private String nombre;
+    @ColumnInfo(name = "descripcion")
     private String descripcion;
+    @ColumnInfo(name = "precio")
     private Double precio;
+    @Embedded(prefix = "cat_")
     private Categoria categoria;
+
+
+    public Producto(){
+        /*this.id = Integer.parseInt(UUID.randomUUID().toString());*/
+    }
 
     public Producto(String nombre, String descripcion, Double precio, Categoria categoria) {
         this.nombre = nombre;

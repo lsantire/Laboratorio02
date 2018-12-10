@@ -1,5 +1,6 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
+import android.arch.persistence.room.RoomOpenHelper;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,8 +9,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ar.edu.utn.frsf.dam.isi.laboratorio02.Adaptadores.PedidoAdaptador;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class VerHistorialActivity extends AppCompatActivity {
@@ -19,6 +24,8 @@ public class VerHistorialActivity extends AppCompatActivity {
     private PedidoRepository pedidosRepository;
     private Button btnHistorialNuevo;
     private Button btnHistorialMenu;
+    private List<Pedido> pedidos;
+
 
 
     @Override
@@ -30,10 +37,30 @@ public class VerHistorialActivity extends AppCompatActivity {
         btnHistorialNuevo = (Button) findViewById(R.id.btnHistorialNuevo);
         btnHistorialMenu = (Button) findViewById(R.id.btnHistorialMenu);
 
+        RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+
         pedidosRepository = new PedidoRepository();
 
-        adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this, pedidosRepository.getLista());
-        lstHistorialPedidos.setAdapter(adaptadorPedidos);
+        Runnable rGetPedidos = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    pedidos = RoomMyProject.getAllPedido();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adaptadorPedidos = new PedidoAdaptador(VerHistorialActivity.this, pedidos /*pedidosRepository.getLista() VIEJO */);
+                            lstHistorialPedidos.setAdapter(adaptadorPedidos);
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread hiloGetPedidos = new Thread(rGetPedidos);
+        hiloGetPedidos.start();
 
         btnHistorialMenu.setOnClickListener(new View.OnClickListener() {
             @Override

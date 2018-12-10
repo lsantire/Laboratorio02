@@ -1,11 +1,26 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
-import java.util.Objects;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Objects;
+import java.util.UUID;
+
+@Entity
 public class Categoria {
 
-    private Integer id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    @ColumnInfo(name = "Nombre")
     private String nombre;
+
+    public Categoria(){
+        //this.id = Integer.parseInt(UUID.randomUUID().toString());
+    }
+
+
 
     public Categoria(Integer id, String nombre) {
         this.id = id;
@@ -16,8 +31,6 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-    public Categoria() {
-    }
 
     public Integer getId() {
         return id;

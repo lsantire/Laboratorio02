@@ -12,6 +12,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.ConexionJson.CategoriaRest;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Categoria;
 
 public class CategoriaActivity extends AppCompatActivity {
@@ -38,9 +39,14 @@ public class CategoriaActivity extends AppCompatActivity {
                     public void run() {
                         Categoria cat = new Categoria();
                         cat.setNombre(txtNombreCategoria.getText().toString());
-                        CategoriaRest categoriaRest = new CategoriaRest();
+                        //CategoriaRest categoriaRest = new CategoriaRest();
+
+
+
                         try {
-                            categoriaRest.crearCategoria(cat);
+                           // categoriaRest.crearCategoria(cat);
+                            RoomMyProject.insert(cat);
+                            RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -48,11 +54,7 @@ public class CategoriaActivity extends AppCompatActivity {
                                     Toast.makeText(CategoriaActivity.this, "Categoria creada!", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        }catch (Exception e){e.printStackTrace();}
                     }
 
 
