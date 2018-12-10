@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,23 +22,64 @@ public class MainActivity extends AppCompatActivity {
     private Button btnConfiguracion;
     private Button btnCategorias;
     private Button btnProductos;
+    private Pedido pedidoParaActualizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+
+        RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
+
         if (getIntent().hasExtra("ID_PEDIDO")) {
-            Integer id = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
-            PedidoRepository pedidoRepository = new PedidoRepository();
-            Pedido pedido = pedidoRepository.buscarPorId(id);
-            if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
-                pedido.setEstado(Pedido.Estado.LISTO);
-                Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
-                intenListo.putExtra("idPedido", pedido.getId());
-                intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
-                sendBroadcast(intenListo);
-            }
+            //PedidoRepository pedidoRepository = new PedidoRepository();
+            // Pedido pedido = pedidoRepository.buscarPorId(id);
+
+            Runnable rSetListo = new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Integer id = Integer.valueOf(getIntent().getExtras().getString("ID_PEDIDO"));
+                        Pedido pedido = RoomMyProject.loadByIdPedido(id);
+                        if (!pedido.getEstado().equals(Pedido.Estado.LISTO)) {
+                            pedido.setEstado(Pedido.Estado.LISTO);
+                            pedidoParaActualizar=pedido;
+
+                            Runnable rUpdatePedido = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        RoomMyProject.updatePedido(pedidoParaActualizar);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                            Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                            hiloUpdatePedido.start();
+                            try{
+                                hiloUpdatePedido.join();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                            Intent intenListo = new Intent(MainActivity.this, EstadoPedidoReceiver.class);
+                            intenListo.putExtra("idPedido", pedido.getId());
+                            intenListo.setAction(EstadoPedidoReceiver.ESTADO_LISTO);
+                            sendBroadcast(intenListo);
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Thread hiloSetListo = new Thread(rSetListo);
+            hiloSetListo.start();
+
         }
 
         btnNuevoPedido = (Button) findViewById(R.id.btnMainNuevoPedido);

@@ -6,7 +6,7 @@ import java.util.List;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 
 public class PedidoRepository {
-
+/*
     private static List<Pedido> LISTA_PEDIDOS = new ArrayList<>();
     private static int GENERADOR_ID_PEDIDO = 0;
 
@@ -29,6 +29,6 @@ public class PedidoRepository {
         }
         return null;
     }
-
+*/
 
 }

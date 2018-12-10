@@ -1,20 +1,38 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02.modelo;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.EstadoConverter;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.FechaConverter;
+
+@Entity
 public class Pedido {
 
     public enum Estado { REALIZADO, ACEPTADO, RECHAZADO,EN_PREPARACION,LISTO,ENTREGADO,CANCELADO}
-
-    private Integer id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    @TypeConverters(FechaConverter.class)
     private Date fecha;
+    @Ignore
     private List<PedidoDetalle> detalle;
+    @TypeConverters(EstadoConverter.class)
     private Estado estado;
+    @ColumnInfo
     private String direccionEnvio;
+    @ColumnInfo
     private String mailContacto;
-    private Boolean retirar;
+    @ColumnInfo
+    private boolean retirar;
 
     public String getDireccionEnvio() {
         return direccionEnvio;
@@ -95,6 +113,7 @@ public class Pedido {
     public void agregarDetalle(PedidoDetalle det){
         if(this.detalle == null) this.detalle = new ArrayList<>();
         this.detalle.add(det);
+        if(det.getPedido()==null) det.setPedido(this);
     }
 
     public void quitarDetalle(PedidoDetalle det){

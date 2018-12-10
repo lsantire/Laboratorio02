@@ -1,6 +1,7 @@
 package ar.edu.utn.frsf.dam.isi.laboratorio02;
 
 import android.app.Activity;
+import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import java.util.GregorianCalendar;
 
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.PedidoRepository;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.ProductoRepository;
+import ar.edu.utn.frsf.dam.isi.laboratorio02.dao.RoomMyProject;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.Pedido;
 import ar.edu.utn.frsf.dam.isi.laboratorio02.modelo.PedidoDetalle;
 
@@ -33,6 +35,9 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     class RequestCode {
         static final int AGREGAR_PRODUCTO = 100;
     }
+
+    private int cantidad, idProductoAgregado;
+    private Pedido pedidoParaActualizar;
 
     Bundle extras;
     Pedido pedido;
@@ -50,6 +55,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
     Button btnQuitarProductoPedido, btnAgregarProductoPedido, btnFinalizarPedido, btnVolverPedido;
     TextView tvCostoTotalPedido;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +68,7 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_single_choice, pedido.getDetalle());
         extras = getIntent().getExtras();
 
-        SimpleDateFormat sdf;
+
         sdf = new SimpleDateFormat("HH:mm");
 
         btnVolverPedido = (Button) findViewById(R.id.btnVolverPedido);
@@ -78,49 +84,70 @@ public class NuevoPedidoActivity extends AppCompatActivity {
         btnFinalizarPedido = (Button) findViewById(R.id.btnFinalizarPedido);
         editPedidoCorreo = (EditText) findViewById(R.id.editPedidoCorreo);
 
+        RoomMyProject.getInstance(getApplicationContext()); //Crea la DB
 
 
         tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
         listaProductosPedido.setAdapter(adaptadorDetallePedido);
 
         SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        optPedidoRetira.setChecked(preferencias.getBoolean("preferenciaRetirar",false));
-        optPedidoEnviar.setChecked(!preferencias.getBoolean("preferenciaRetirar",true));
-        editPedidoCorreo.setText(preferencias.getString("preferenciaCorreoElectronico",""));
-
+        optPedidoRetira.setChecked(preferencias.getBoolean("preferenciaRetirar", false));
+        optPedidoEnviar.setChecked(!preferencias.getBoolean("preferenciaRetirar", true));
+        editPedidoCorreo.setText(preferencias.getString("preferenciaCorreoElectronico", ""));
 
 
         System.out.println("nuevoPedidoActivity");
 
         if (getIntent().hasExtra("idPedidoSeleccionado")) {
-            int idPedido;
-            System.out.println("tiene idPedidoSeleccionado");
-            idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
 
-            if (idPedido >= 0) {
-                pedido = repositorioPedidos.buscarPorId(idPedido);
-                editPedidoCorreo.setText(pedido.getMailContacto());
-                editDireccion.setText(pedido.getDireccionEnvio());
-                editHoraEntrega.setText(sdf.format(pedido.getFecha()));
-                optPedidoEnviar.setChecked(!pedido.getRetirar());
-                optPedidoRetira.setChecked(pedido.getRetirar());
-                tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
+            Runnable rGetPedido = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int idPedido;
+                        System.out.println("tiene idPedidoSeleccionado");
+                        idPedido = getIntent().getExtras().getInt("idPedidoSeleccionado");
+
+                        if (idPedido >= 0) {
+                            //pedido = repositorioPedidos.buscarPorId(idPedido); ESTATICO
 
 
-                adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_1, pedido.getDetalle());
-                listaProductosPedido.setAdapter(adaptadorDetallePedido);
-                editPedidoCorreo.setEnabled(false);
-                editDireccion.setEnabled(false);
-                editHoraEntrega.setEnabled(false);
-                optPedidoEnviar.setEnabled(false);
-                optPedidoRetira.setEnabled(false);
-                btnAgregarProductoPedido.setEnabled(false);
-                btnQuitarProductoPedido.setEnabled(false);
-                btnFinalizarPedido.setEnabled(false);
-                listaProductosPedido.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                            pedido = RoomMyProject.loadByIdPedido(idPedido);
 
-            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    editPedidoCorreo.setText(pedido.getMailContacto());
+                                    editDireccion.setText(pedido.getDireccionEnvio());
+                                    editHoraEntrega.setText(sdf.format(pedido.getFecha()));
+                                    optPedidoEnviar.setChecked(!pedido.getRetirar());
+                                    optPedidoRetira.setChecked(pedido.getRetirar());
+                                    tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
 
+
+                                    adaptadorDetallePedido = new ArrayAdapter<>(NuevoPedidoActivity.this, android.R.layout.simple_list_item_1, pedido.getDetalle());
+                                    listaProductosPedido.setAdapter(adaptadorDetallePedido);
+                                    editPedidoCorreo.setEnabled(false);
+                                    editDireccion.setEnabled(false);
+                                    editHoraEntrega.setEnabled(false);
+                                    optPedidoEnviar.setEnabled(false);
+                                    optPedidoRetira.setEnabled(false);
+                                    btnAgregarProductoPedido.setEnabled(false);
+                                    btnQuitarProductoPedido.setEnabled(false);
+                                    btnFinalizarPedido.setEnabled(false);
+                                    listaProductosPedido.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                                }
+                            });
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Thread hiloGetPedido = new Thread(rGetPedido);
+            hiloGetPedido.start();
 
         }
 
@@ -214,17 +241,33 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                     hora.set(Calendar.MINUTE, valorMinuto);
                     hora.set(Calendar.SECOND, Integer.valueOf(0));
 
+                    //pedido = new Pedido();
+
                     pedido.setFecha(hora.getTime());
                     pedido.setDireccionEnvio(editDireccion.getText().toString());
                     pedido.setEstado(Pedido.Estado.REALIZADO);
                     pedido.setMailContacto(editPedidoCorreo.getText().toString());
                     pedido.setRetirar(optPedidoRetira.isChecked());
-                    repositorioPedidos.guardarPedido(pedido);
+
+                    // repositorioPedidos.guardarPedido(pedido); ESTATICO
+                    Runnable rInsertarPedido = new Runnable() {
+                        @Override
+                        public void run() {
+                            //try{
+                            RoomMyProject.insertPedido(pedido);
+                            /*}catch (Exception e){
+                                e.printStackTrace();
+                            }*/
+                        }
+                    };
+
+                    Thread hiloInsertarPedido = new Thread(rInsertarPedido);
+                    hiloInsertarPedido.start();
 
                     Runnable rAceptarPedidos = new Runnable() {
                         @Override
                         public void run() {
-                            try{
+                            try {
                                 System.out.println("antes del sleep");
                                 Thread.currentThread().sleep(10000);
                                 System.out.println("despues del sleep");
@@ -235,12 +278,32 @@ public class NuevoPedidoActivity extends AppCompatActivity {
                             }
 
                             //buscar pedidos no aceptados y aceptarlos automaticamente
-                            for(Pedido p:repositorioPedidos.getLista()){
-                                if(p.getEstado().equals(Pedido.Estado.REALIZADO))
-                                {
+                            for (Pedido p : RoomMyProject.getAllPedido() /*repositorioPedidos.getLista() VIEJO*/) {
+                                if (p.getEstado().equals(Pedido.Estado.REALIZADO)) {
                                     p.setEstado(Pedido.Estado.ACEPTADO);
-                                    Intent intentAceptado = new Intent(NuevoPedidoActivity.this,EstadoPedidoReceiver.class);
-                                    intentAceptado.putExtra("idPedido",p.getId());
+                                    pedidoParaActualizar=p;
+
+                                    Runnable rUpdatePedido = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try{
+                                                RoomMyProject.updatePedido(pedidoParaActualizar);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    };
+
+                                    Thread hiloUpdatePedido = new Thread(rUpdatePedido);
+                                    hiloUpdatePedido.start();
+                                    try{
+                                        hiloUpdatePedido.join();
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
+                                    Intent intentAceptado = new Intent(NuevoPedidoActivity.this, EstadoPedidoReceiver.class);
+                                    intentAceptado.putExtra("idPedido", p.getId());
                                     intentAceptado.setAction(EstadoPedidoReceiver.ESTADO_ACEPTADO);
                                     sendBroadcast(intentAceptado);
                                 }
@@ -287,15 +350,35 @@ public class NuevoPedidoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int cantidad, idProductoAgregado;
         switch (requestCode) {
             case (RequestCode.AGREGAR_PRODUCTO): {
                 if (resultCode == Activity.RESULT_OK) {
                     cantidad = data.getIntExtra("cantidad", -1);
                     idProductoAgregado = data.getIntExtra("idProducto", -1);
-                    pedido.agregarDetalle(new PedidoDetalle(cantidad, repositorioProductos.buscarPorId(idProductoAgregado)));
-                    adaptadorDetallePedido.notifyDataSetChanged();
-                    tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
+                    Runnable rAgregarDetalle = new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+                                pedido.agregarDetalle(new PedidoDetalle(cantidad, RoomMyProject.getProdById(idProductoAgregado) /*repositorioProductos.buscarPorId(idProductoAgregado)*/));
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adaptadorDetallePedido.notifyDataSetChanged();
+                                        tvCostoTotalPedido.setText(getResources().getString(R.string.costoTotal) + String.format("$%.2f", pedido.total()));
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                    };
+                    Thread hiloAgregarDetalle = new Thread(rAgregarDetalle);
+                    hiloAgregarDetalle.start();
+
                 }
                 break;
             }
